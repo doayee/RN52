@@ -3,8 +3,8 @@
 	Adapted from the SoftwareSerial library
 	With added functionality to interface with the RN52.
 	SoftwareSerial library by ladyada, Mikal Hart, Paul Stoffregen, Garrett Mace, and Brett Hagman.
-	RN52 changed by Thomas Cousins and Thomas McQueen for http://doayee.co.uk 
-	
+	RN52 changed by Thomas Cousins and Thomas McQueen for https://doayee.co.uk
+
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
 	License as published by the Free Software Foundation; either
@@ -26,9 +26,9 @@
 #define _DEBUG 0
 #define _DEBUG_PIN1 11
 #define _DEBUG_PIN2 13
-// 
+//
 // Includes
-// 
+//
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include <Arduino.h>
@@ -39,7 +39,7 @@
 // Statics
 //
 RN52 *RN52::active_object = 0;
-char RN52::_receive_buffer[_SS_MAX_RX_BUFF]; 
+char RN52::_receive_buffer[_SS_MAX_RX_BUFF];
 volatile uint8_t RN52::_receive_buffer_tail = 0;
 volatile uint8_t RN52::_receive_buffer_head = 0;
 short RN52::IOMask = 0x0004;
@@ -73,13 +73,13 @@ inline void DebugPulse(uint8_t pin, uint8_t count)
 // Private methods
 //
 
-/* static */ 
-inline void RN52::tunedDelay(uint16_t delay) { 
+/* static */
+inline void RN52::tunedDelay(uint16_t delay) {
   _delay_loop_2(delay);
 }
 
 // This function sets the current object as the "listening"
-// one and returns true if it replaces another 
+// one and returns true if it replaces another
 bool RN52::listen()
 {
   if (!_rx_delay_stopbit)
@@ -133,7 +133,7 @@ void RN52::recv()
     "push r26 \n\t"
     "push r27 \n\t"
     ::);
-#endif  
+#endif
 
   uint8_t d = 0;
 
@@ -170,8 +170,8 @@ void RN52::recv()
       // save new data in buffer: tail points to where byte goes
       _receive_buffer[_receive_buffer_tail] = d; // save new byte
       _receive_buffer_tail = next;
-    } 
-    else 
+    }
+    else
     {
       DebugPulse(_DEBUG_PIN1, 1);
       _buffer_overflow = true;
@@ -242,7 +242,7 @@ ISR(PCINT3_vect, ISR_ALIASOF(PCINT0_vect));
 //
 // Constructor
 //
-RN52::RN52(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic /* = false */) : 
+RN52::RN52(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic /* = false */) :
   _rx_delay_centering(0),
   _rx_delay_intrabit(0),
   _rx_delay_stopbit(0),
@@ -460,7 +460,7 @@ size_t RN52::write(uint8_t b)
 
   SREG = oldSREG; // turn interrupts back on
   tunedDelay(_tx_delay);
-  
+
   return 1;
 }
 
@@ -594,7 +594,7 @@ String RN52::name(void)
   String nom;
   char c;
   while (available() == 0);
- do 
+ do
   {
     c = read();
     nom = nom + c;
@@ -756,8 +756,11 @@ String RN52::genre()
 int RN52::trackNumber()
 {
   int trackNumber;
+  int attempts = 5;
+
   String metaData = getMetaData();
   int n = metaData.indexOf("TrackNumber=") + 12;
+
   if (n != -1) {
     metaData.remove(0, n);
     n = metaData.indexOf('\r');
@@ -765,6 +768,8 @@ int RN52::trackNumber()
     trackNumber = metaData.toInt();
   }
   else trackNumber = 0;
+
+
   return trackNumber;
 }
 
@@ -810,14 +815,25 @@ String RN52::getConnectionData()
 
 String RN52::connectedMAC()
 {
-  String connectionData = getConnectionData();
-  int n = connectionData.indexOf("BTAC=") + 5;
-  if (n != -1) {
-    connectionData.remove(0, n);
-    n = connectionData.indexOf('\r');
-    connectionData.remove(n);
+  String connectionData="";
+  int attempts=0;
+
+  while(connectionData.length()!=12 && attempts < 5){
+
+    connectionData = getConnectionData();
+
+    int n = connectionData.indexOf("BTAC=") + 5;
+    if (n != -1) {
+      connectionData.remove(0, n);
+      n = connectionData.indexOf('\r');
+      connectionData.remove(n);
+    }
+    attempts++;
   }
-  else connectionData = "";
+
+  if(connectionData.length()!= 12){
+    connectionData = "Invalid MAC Address";
+  }
   return connectionData;
 }
 
@@ -866,16 +882,16 @@ short RN52::getEventReg()
 
   short valueIn = 0;
   char c;
-  
+
   while (c != '\r')
   {
     while (available() == 0) {
       println("Q");
       delay(50);
     }
-	
+
     c = read();
-	
+
     if (c >= '0' && c <= '9')
     {
       valueIn *= 16;
@@ -886,7 +902,7 @@ short RN52::getEventReg()
       valueIn *= 16;
       valueIn += (c - 'A') + 10;
     }
-	
+
     else if ((c == '?') || (c == '!'))
     {
       while (available() > 0)
@@ -895,24 +911,24 @@ short RN52::getEventReg()
       }
     }
   }
-  
+
   /* Record the track change internally */
   if(!_trackChanged && (valueIn & (1 << 13)))
 	  _trackChanged = true;
-  
+
   return valueIn;
 }
 
 bool RN52::trackChanged(void)
 {
-	/* If the track has changed since this function was last called 
+	/* If the track has changed since this function was last called
 	   and getEventReg has been called since */
 	if(_trackChanged)
 	{
 		_trackChanged = false;
 		return true;
 	}
-	
+
 	bool change = (getEventReg() & (1 << 13));
 	_trackChanged = false;
 	return change;
@@ -1184,7 +1200,7 @@ void RN52::sampleRate(int rate)
 int RN52::A2DPRoute()
 {
   int route = (getAudioRouting() & 0x0F00) >> 8;
-  return route; 
+  return route;
 }
 
 void RN52::A2DPRoute(int route)
@@ -1198,4 +1214,3 @@ void RN52::A2DPRoute(int route)
   println(toWrite, HEX);
   delay(50);
 }
-
