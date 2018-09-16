@@ -755,36 +755,46 @@ String RN52::genre()
 
 int RN52::trackNumber()
 {
-  int trackNumber;
-  int attempts = 5;
+  int trackNumber = 0;
+  int attempts = 0;
 
-  String metaData = getMetaData();
-  int n = metaData.indexOf("TrackNumber=") + 12;
+  String metaData = "";
 
-  if (n != -1) {
-    metaData.remove(0, n);
-    n = metaData.indexOf('\r');
-    metaData.remove(n);
-    trackNumber = metaData.toInt();
+  while(trackNumber==0 && attempts < 5){
+      metaData = getMetaData();
+      int n = metaData.indexOf("TrackNumber=") + 12;
+      if (n != -1) {
+        metaData.remove(0, n);
+        n = metaData.indexOf('\r');
+        metaData.remove(n);
+        trackNumber = metaData.toInt();
+      }
+    else trackNumber = 0;
+    attempts++;
   }
-  else trackNumber = 0;
-
 
   return trackNumber;
 }
 
 int RN52::trackCount()
 {
-  int trackCount;
-  String metaData = getMetaData();
-  int n = metaData.indexOf("TrackCount=") + 11;
-  if (n != -1) {
-    metaData.remove(0, n);
-    n = metaData.indexOf('\r');
-    metaData.remove(n);
-    trackCount = metaData.toInt();
+  int trackCount = 0;
+  int attempts = 0;
+
+  String metaData = "";
+
+  while(trackCount==0 && attempts < 5){
+    metaData = getMetaData();
+    int n = metaData.indexOf("TrackCount=") + 11;
+    if (n != -1) {
+      metaData.remove(0, n);
+      n = metaData.indexOf('\r');
+      metaData.remove(n);
+      trackCount = metaData.toInt();
+    }
+    else trackCount = 0;
+    attempts++;
   }
-  else trackCount = 0;
   return trackCount;
 }
 
