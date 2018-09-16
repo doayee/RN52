@@ -103,7 +103,10 @@ scroll_t connectedDevice;
  * Notes:  Runs once                              
  ******************************************************************************/
 void setup() {
-  rn52.begin(38400);   //begin communication at a baud rate of 38400
+  
+  /* RN52 factory default baud is 115200. Issue command SU,01 at this baud
+  to change to 9600, which works much better with this sketch */
+  rn52.begin(9600);   //begin communication at a baud rate of 9600
   Serial.begin(9600);  //begin Serial communication with computer at a baud rate of 9600
 
   lcd.begin(16,2);     //begin the LCD interface
