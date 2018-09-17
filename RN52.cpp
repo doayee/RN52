@@ -807,7 +807,7 @@ String RN52::getConnectionData()
   println("D");
   while (available() == 0);
   String connectionData;
-  int i = 5;
+  int i = 13;
   long count;
   while (i != 0)
   {
