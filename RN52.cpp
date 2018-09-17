@@ -685,7 +685,7 @@ String RN52::getMetaData()
   println("AD");
   while (available() == 0);
   String metaData;
-  int i = 6;
+  int i = 8;
   long count;
   while (i != 0)
   {
@@ -807,7 +807,7 @@ String RN52::getConnectionData()
   println("D");
   while (available() == 0);
   String connectionData;
-  int i = 13;
+  int i = 5;
   long count;
   while (i != 0)
   {
