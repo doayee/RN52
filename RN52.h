@@ -3,8 +3,8 @@
 	Adapted from the SoftwareSerial library
 	With added functionality to interface with the RN52.
 	SoftwareSerial library by ladyada, Mikal Hart, Paul Stoffregen, Garrett Mace, and Brett Hagman.
-	RN52 changed by Thomas Cousins and Thomas McQueen for http://doayee.co.uk 
-	
+	RN52 changed by Thomas Cousins and Thomas McQueen for https://doayee.co.uk
+
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
 	License as published by the Free Software Foundation; either
@@ -57,7 +57,7 @@ private:
   uint16_t _inverse_logic:1;
 
   // static data
-  static char _receive_buffer[_SS_MAX_RX_BUFF]; 
+  static char _receive_buffer[_SS_MAX_RX_BUFF];
   static volatile uint8_t _receive_buffer_tail;
   static volatile uint8_t _receive_buffer_head;
   static volatile bool _trackChanged;
@@ -67,7 +67,7 @@ private:
   static short IOStateMask;
   static short IOStateProtect;
   static short IO;
-  static short IOState;	
+  static short IOState;
 
   // private methods
   void recv() __attribute__((__always_inline__));
@@ -82,8 +82,7 @@ private:
 
   // private static method for timing
   static inline void tunedDelay(uint16_t delay);
-  
-  
+
 
 
 public:
@@ -104,7 +103,7 @@ public:
   virtual int available();
   virtual void flush();
   operator bool() { return true; }
-  
+
   using Print::write;
 
   static inline void handle_interrupt() __attribute__((__always_inline__));
@@ -134,9 +133,11 @@ public:
   String getConnectionData();
   String connectedMAC();
   short getExtFeatures();
+  //not yet documented
   short getEventReg();
   bool trackChanged();
   bool isConnected();
+  //end
   void setExtFeatures(bool state, int bit);
   void setExtFeatures(short settings);
   bool AVRCPButtons();
@@ -160,7 +161,7 @@ public:
   //Not in guide
   bool trackChangeEvent();
   void trackChangeEvent(bool state);
-  //</Not in guide> 
+  //</Not in guide>
   bool tonesAtFixedVolume();
   void tonesAtFixedVolume(bool state);
   bool autoAcceptPasskey();
