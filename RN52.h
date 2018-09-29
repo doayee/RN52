@@ -107,22 +107,35 @@ public:
   using Print::write;
 
   static inline void handle_interrupt() __attribute__((__always_inline__));
+
+// GPIO Commands
   bool GPIOPinMode(int pin, bool state);
   void GPIODigitalWrite(int pin, bool state);
   bool GPIODigitalRead(int pin);
+
+// General Commands
+  void reboot();
   void setDiscoverability(bool discoverable);
   void toggleEcho();
-  void name(String nom, bool normalized);
-  String name(void);
   void factoryReset();
   int idlePowerDownTime(void);
   void idlePowerDownTime(int timer);
-  void reboot();
+  void name(String nom, bool normalized);
+  String name(void);
+  int volumeOnStartup();
+  void volumeOnStartup(int vol);
+
   void call(String number);
   void endCall();
+
+// Audio Commands
+  void volumeUp();
+  void volumeDown();
   void playPause();
   void nextTrack();
   void prevTrack();
+
+// Audio Commands - metadata
   String getMetaData();
   String trackTitle();
   String album();
@@ -130,16 +143,22 @@ public:
   String genre();
   int trackNumber();
   int trackCount();
+
+// Connection Information
   String getConnectionData();
   String connectedMAC();
-  short getExtFeatures();
-  //not yet documented
+
+// Event/Status Register Commands
   short getEventReg();
   bool trackChanged();
   bool isConnected();
-  //end
+
+// RN52 Extended Features - Advanced
   void setExtFeatures(bool state, int bit);
   void setExtFeatures(short settings);
+  short getExtFeatures();
+
+// RN52 Extended Features - Functions
   bool AVRCPButtons();
   void AVRCPButtons(bool state);
   bool powerUpReconnect();
@@ -166,11 +185,8 @@ public:
   void tonesAtFixedVolume(bool state);
   bool autoAcceptPasskey();
   void autoAcceptPasskey(bool state);
-  int volumeOnStartup();
-  void volumeOnStartup(int vol);
-  void volumeUp();
-  void volumeDown();
-  //Following not in the guide
+
+// A2DP Audio Routing Commands
   short getAudioRouting();
   int sampleWidth();
   void sampleWidth(int width);
