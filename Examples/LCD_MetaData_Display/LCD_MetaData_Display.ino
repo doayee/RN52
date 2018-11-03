@@ -381,7 +381,10 @@ void UpdateData(void)
 {
   /* if theres nothing connected, update the global state and dont request any info*/
   if(!rn52.isConnected()) {
-    deviceConnected = false;
+    delay(100);
+    if(!rn52.isConnected()) {
+      deviceConnected = false;
+    }
     return;
   }
 
